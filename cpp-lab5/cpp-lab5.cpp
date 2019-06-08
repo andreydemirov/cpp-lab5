@@ -1,14 +1,85 @@
-﻿// cpp-lab5.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
+// Дан файл, компонентами которого являются целые числа. Получить в файле g все компоненты файла f деляющийся на 3.
 
 #include "pch.h"
 #include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <Windows.H>
+
+using namespace std;
+
+template <typename Stream>
+bool read_num(Stream& stream, int& number)
+{
+	char c = 0;
+	string buf;
+	while (true)
+	{
+		stream.read(&c, 1);
+		if (c == ' ' || stream.eof())
+		{
+			if (!buf.empty())
+			{
+				number = atoi(buf.c_str());
+				return true;
+			}
+		}
+		else
+		{
+			buf += c;
+		}
+	}
+	return false;
+}
 
 int main()
 {
-    std::cout << "Hello World!\n"; 
-}
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
 
+	fstream fin;
+	string inputPath = "C:\Users\BOSS\Desktop\input.txt.txt";
+	string outputPath = "C:\Users\BOSS\Desktop\output.txt.txt";
+
+	fin.open(inputPath);
+
+	vector <int> numbers;
+
+	if (fin.is_open()) {
+		while (!fin.eof())
+		{
+			int num;
+
+			if (read_num(fin, num))
+				numbers.push_back(num);
+		}
+
+	}
+	else {
+		cout << "Ошибка открытия файла!" << endl;
+		return 1;
+	}
+	fin.close();
+
+	cout << "Числа из текстового файла : " << endl;
+	for (int num : numbers)
+		cout << num << " ";
+
+
+	ofstream fout;          // поток для записи
+	fout.open(outputPath); // окрываем файл для записи
+
+
+	fout << "Числа, которые делятся на 3 :" << endl;
+	for (int num : numbers)
+		if (num / 3 < 0.001) {
+			fout << num << " ";
+		}
+	fout.close();
+
+	return 0;
+}
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
 // Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
 
